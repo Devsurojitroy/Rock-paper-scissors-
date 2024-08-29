@@ -1,0 +1,80 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const choices = ['rock', 'paper', 'scissors'];
+    const buttons = document.querySelectorAll('.choice');
+    const resultText = document.getElementById('resultText');
+    const playerScoreText = document.getElementById('playerScore');
+    const computerScoreText = document.getElementById('computerScore');
+    const historyList = document.getElementById('historyList');
+    const resetGameButton = document.getElementById('resetGame');
+    const playerNameInput = document.getElementById('playerName');
+    const playerNameDisplay = document.getElementById('playerNameDisplay');
+    const startGameButton = document.getElementById('startGame');
+    const difficultySelect = document.getElementById('difficulty');
+    const lightThemeButton = document.getElementById('lightTheme');
+    const darkThemeButton = document.getElementById('darkTheme');
+
+    let playerScore = 0;
+    let computerScore = 0;
+
+    startGameButton.addEventListener('click', () => {
+        const playerName = playerNameInput.value || 'Player';
+        playerNameDisplay.textContent = playerName;
+    });
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const userChoice = button.id;
+            const computerChoice = getComputerChoice(difficultySelect.value);
+            const result = determineWinner(userChoice, computerChoice);
+
+            updateScore(result);
+            resultText.textContent = `You chose ${userChoice}, computer chose ${computerChoice}. ${result}`;
+            addHistory(userChoice, computerChoice, result);
+            animateResult(result);
+        });
+    });
+
+    function getComputerChoice(difficulty) {
+        if (difficulty === 'easy') {
+            return choices[Math.floor(Math.random() * choices.length)];
+        } else if (difficulty === 'medium') {
+            return getMediumComputerChoice();
+        } else {
+            return getHardComputerChoice();
+        }
+    }
+
+    function getMediumComputerChoice() {
+        return choices[Math.floor(Math.random() * choices.length)];
+    }
+
+    function getHardComputerChoice() {
+        // Hard difficulty: computer tries to win more often
+        const winningChoiceMap = {
+            'rock': 'paper',
+            'paper': 'scissors',
+            'scissors': 'rock'
+        };
+        const randomIndex = Math.floor(Math.random() * choices.length);
+        return winningChoiceMap[choices[randomIndex]];
+    }
+
+    function determineWinner(user, computer) {
+        if (user === computer) {
+            return "It's a draw!";
+        } else if ((user === 'rock' && computer === 'scissors') ||
+                   (user === 'paper' && computer === 'rock') ||
+                   (user === 'scissors' && computer === 'paper')) {
+            return "You win!";
+        } else {
+            return "You lose!";
+        }
+    }
+
+    function updateScore(result) {
+        if (result === "You win!") {
+            playerScore++;
+        } else if (result === "You lose!") {
+            computerScore++;
+        }
+        player
